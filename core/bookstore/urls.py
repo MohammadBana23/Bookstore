@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import hello_world
+from bookstore.views import (
+    SignUpView, LoginView
+)
 
 urlpatterns = [
-    path('hello/', hello_world, name='hello-world'),
+    path('signup/' , SignUpView.as_view(), name='signup'),
+    path('login/' , LoginView.as_view(), name='login'),
 ]
