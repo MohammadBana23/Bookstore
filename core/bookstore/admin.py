@@ -11,14 +11,16 @@ class UserAdmin(BaseUserAdmin):
         "phone",
         "username",
         "birthdate",
+        "cash",
         "is_active",
         "is_staff",
         "is_superuser",
         "is_verified",
+        "is_special",
         "created_at",
         "updated_at",
     )
-    list_filter = ("is_active", "is_staff", "is_superuser")
+    list_filter = ("is_active", "is_staff", "is_superuser", "is_special")
     search_fields = ("email", "phone", "username")
     ordering = ("created_at", "updated_at", "id")
     fieldsets = (
