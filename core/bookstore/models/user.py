@@ -1,5 +1,3 @@
-from hashlib import sha256
-from datetime import datetime
 import random
 import uuid
 from django.db import models
@@ -17,7 +15,7 @@ class UserManager(BaseUserManager):
     """
 
     def create_user(
-        self, email=None, phone=None, username=None, password=None, **extra_fields
+        self, email, phone, password, username=None, **extra_fields
     ):
         """
         Create and save a user with the given email and password.
@@ -30,7 +28,6 @@ class UserManager(BaseUserManager):
 
         # we need to generate a unique username as identifier
         username = generate_username(username)
-
         if not password:
             raise CustomException(
                 "لطفا رمزعبور را وارد کنید.",
@@ -58,7 +55,7 @@ class UserManager(BaseUserManager):
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-    def create_superuser(self, email, phone, username, password, **extra_fields):
+    def create_superuser(self, email, phone, password, **extra_fields):
         """
         Create and save a SuperUser with the given email and password.
         """
@@ -71,7 +68,7 @@ class UserManager(BaseUserManager):
             raise ValueError()
         if extra_fields.get("is_superuser") is not True:
             raise ValueError()
-        return self.create_user(email, phone, username, password, **extra_fields)
+        return self.create_user(email, phone, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
