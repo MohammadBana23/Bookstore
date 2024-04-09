@@ -1,4 +1,5 @@
 from django.db import models
+from bookstore.models.category import Category
 
 
 class Book(models.Model):
@@ -15,9 +16,9 @@ class Book(models.Model):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, null=True, blank=True)
     publisher = models.CharField(max_length=255, null=True, blank=True)
-    category = models.CharField(max_length=255, choices=CATEGORY_CHOICES, default="GENERAL")
+    categories = models.ManyToManyField(Category, null=True, blank=True)
     picture = models.ImageField(null=True, blank=True)
-    file = models.CharField(max_length=5111)
+    link_download = models.CharField(max_length=1023)
     cost = models.IntegerField(default=0)
     language = models.CharField(max_length=255, choices=LANGUAGE_CHOICES, default="ENGLISH")
     year = models.IntegerField(null=True, blank=True)
@@ -25,6 +26,9 @@ class Book(models.Model):
     is_special = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    def get_categories(self):
+        return "\n".join([c.categories for c in self.categories.all()])
     
     def __str__(self):
         return self.name

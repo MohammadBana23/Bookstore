@@ -47,7 +47,7 @@ class BookAdmin(admin.ModelAdmin):
         "name",
         "author",
         "publisher",
-        "category",
+        "get_categories",
         "cost",
         "link_download",
         "language",
