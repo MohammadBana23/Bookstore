@@ -1,2 +1,3 @@
 from .register import *
 from .book import *
+from .token import *
