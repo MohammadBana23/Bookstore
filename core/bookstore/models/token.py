@@ -4,7 +4,6 @@ from datetime import timedelta
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.utils import timezone
 from django.template.loader import render_to_string
 from ..api.tools import CustomException
 from rest_framework import status
