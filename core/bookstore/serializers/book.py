@@ -53,6 +53,7 @@ class BuyBookSerializer(serializers.Serializer):
         
         # Subtract the book cost from the user's cash
         user.cash -= book.cost
+        user.books.add(book)
         user.save()
         
         # Create the BuyBook object
