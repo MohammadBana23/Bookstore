@@ -12,6 +12,7 @@ class UserAdmin(BaseUserAdmin):
         "username",
         "birthdate",
         "cash",
+        "get_books_bought",
         "is_active",
         "is_staff",
         "is_superuser",
@@ -39,4 +40,10 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
+    
+    def get_books_bought(self, obj):
+        # Return the books bought by the user
+        return ', '.join([book.name for book in obj.books.all()])  # Assuming books are stored in a ManyToManyField named 'books'
+    get_books_bought.short_description = 'Books Bought'  # Set a user-friendly name for the column
+    
 admin.site.register(User, UserAdmin)
