@@ -1,34 +1,44 @@
 
 from rest_framework.response import Response
-from rest_framework.generics import GenericAPIView
-from bookstore.serializers import BookSerializer
+from rest_framework.generics import GenericAPIView, RetrieveAPIView
+from rest_framework.mixins import RetrieveModelMixin
+from bookstore.serializers import BuyBookSerializer, BookDownloadSerializer
 from rest_framework import status
-from minio import Minio
-from io import BytesIO
-from django.http import FileResponse
+from ..models import Book, BuyBook
+from bookstore.api.tools import CustomException
+from rest_framework import serializers
 
-class GetTestBookGenericAPIView(GenericAPIView):
-    serializer_class = BookSerializer
 
-    def get(self, request):
-        return get_object_data()
-        pass
+
+class BuyBookCreateGenericAPIView(GenericAPIView):
+    serializer_class = BuyBookSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, request=request)
+        serializer.is_valid(raise_exception=True)  # Ensure serializer is valid
+        data = {"download link":serializer.save()}
+        return Response(data, status=status.HTTP_201_CREATED)
+    
+class BookDownloadAPIView(RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookDownloadSerializer
+
+    def get_object(self):
+        book = super().get_object()
+        user = self.request.user
         
+        if not self.request.user.is_authenticated:
+            raise serializers.ValidationError("Please authenticate first.")
+
+        # Check if the user has purchased the book
+        try:
+            buy_book = BuyBook.objects.get(user=user, book=book)
+        except BuyBook.DoesNotExist:
+            raise CustomException(
+                "You have not purchased this book.",
+                "error",
+                status_code=status.HTTP_403_FORBIDDEN,
+            )
+
+        return book
     
-    
-def get_object_data():
-    client = Minio("bookstoreminio.darkube.app",
-        access_key="a4l0tgkwhZbC3M6r1LJkbrDHc9PQQiy9",
-        secret_key="dJe8LfUeo0DjymeHd36nu6Q8GCiC4khg",
-    )
-    # Get the object from MinIO
-    response = client.get_object("python-test-bucket", "Django for Professionals.pdf")
-    
-    # Read the object data
-    data = response.read()
-    
-    # Create a BytesIO object from the data
-    data_io = BytesIO(data)
-    
-    # Return the object with FileResponse
-    return FileResponse(data_io,as_attachment=True, filename="Django for Professionals.pdf", content_type="application/pdf")

@@ -7,7 +7,7 @@ from bookstore.api.tools.api import CustomException
 from rest_framework import status
 from django.utils.translation import gettext_lazy as _
 from datetime import date
-from . import Book
+from .book import Book
 
 class UserManager(BaseUserManager):
     """
@@ -93,7 +93,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f"user obj: {self.email} - {self.phone}"
+        return f"user obj: {self.email}"
     
     @property
     def age(self):
