@@ -3,12 +3,6 @@ from bookstore.models.category import Category
 
 
 class Book(models.Model):
-    CATEGORY_CHOICES = (
-        ("GENERAL", "general"),
-        ("EDUCATIONAL", "educational"),
-        ("HISTORICAL", "historical"),
-        ("CHILDISH", "childish"),
-    )
     LANGUAGE_CHOICES = (
         ("ENGLISH", "English"),
         ("PERSIAN", "Persian"),
@@ -16,6 +10,7 @@ class Book(models.Model):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, null=True, blank=True)
     publisher = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category)
     picture = models.ImageField(null=True, blank=True)
     link_download = models.CharField(max_length=1023)
