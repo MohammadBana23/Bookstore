@@ -2,7 +2,7 @@
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView, RetrieveAPIView
 from rest_framework.mixins import RetrieveModelMixin
-from bookstore.serializers import BuyBookSerializer, BookDownloadSerializer
+from bookstore.serializers import BuyBookSerializer, BookDownloadSerializer, BookReturnSerializer
 from rest_framework import status
 from ..models import Book, BuyBook
 from bookstore.api.tools import CustomException
@@ -39,6 +39,26 @@ class BookDownloadAPIView(RetrieveAPIView):
                 "error",
                 status_code=status.HTTP_403_FORBIDDEN,
             )
-
         return book
     
+class BookReturnAPIView(GenericAPIView):
+    serializer_class = BookReturnSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request, 'book_id': self.kwargs['pk']})
+        serializer.is_valid(raise_exception=True)
+
+        # Get the user and book
+        user = request.user
+        book_id = self.kwargs['pk']
+        book = Book.objects.get(pk=book_id)
+
+        # Add the cost of the book to user's cash
+        user.cash += book.cost
+        user.books.remove(book)
+        user.save()
+
+        # Delete the BuyBook record
+        BuyBook.objects.filter(user=user, book_id=book_id).delete()
+
+        return Response({"message": "Book returned successfully."}, status=status.HTTP_200_OK)

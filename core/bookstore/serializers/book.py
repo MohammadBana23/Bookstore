@@ -65,21 +65,37 @@ class BookDownloadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ["link_download"]
+        
+
+class BookReturnSerializer(serializers.Serializer):
+
+    def validate(self, attrs):
+        # Check if the user is authenticated
+        if not self.context['request'].user.is_authenticated:
+            raise serializers.ValidationError("User is not authenticated.")
+        
+        # Check if the user has bought the specified book
+        user = self.context['request'].user
+        book_id = self.context['book_id']
+        if not BuyBook.objects.filter(user=user, book_id=book_id).exists():
+            raise serializers.ValidationError("User has not bought this book.")
+        
+        return attrs
     
 
-def get_object_data():
-    client = Minio("bookstoreminio.darkube.app",
-        access_key="a4l0tgkwhZbC3M6r1LJkbrDHc9PQQiy9",
-        secret_key="dJe8LfUeo0DjymeHd36nu6Q8GCiC4khg",
-    )
-    # Get the object from MinIO
-    response = client.get_object("python-test-bucket", "Django for Professionals.pdf")
+# def get_object_data():
+#     client = Minio("bookstoreminio.darkube.app",
+#         access_key="a4l0tgkwhZbC3M6r1LJkbrDHc9PQQiy9",
+#         secret_key="dJe8LfUeo0DjymeHd36nu6Q8GCiC4khg",
+#     )
+#     # Get the object from MinIO
+#     response = client.get_object("python-test-bucket", "Django for Professionals.pdf")
     
-    # Read the object data
-    data = response.read()
+#     # Read the object data
+#     data = response.read()
     
-    # Create a BytesIO object from the data
-    data_io = BytesIO(data)
+#     # Create a BytesIO object from the data
+#     data_io = BytesIO(data)
     
-    # Return the object with FileResponse
-    return FileResponse(data_io,as_attachment=True, filename="Django for Professionals.pdf", content_type="application/pdf")
+#     # Return the object with FileResponse
+#     return FileResponse(data_io,as_attachment=True, filename="Django for Professionals.pdf", content_type="application/pdf")

@@ -16,7 +16,7 @@ class Book(models.Model):
     name = models.CharField(max_length=255)
     author = models.CharField(max_length=255, null=True, blank=True)
     publisher = models.CharField(max_length=255, null=True, blank=True)
-    categories = models.ManyToManyField(Category, null=True, blank=True)
+    categories = models.ManyToManyField(Category)
     picture = models.ImageField(null=True, blank=True)
     link_download = models.CharField(max_length=1023)
     cost = models.IntegerField(default=0)
