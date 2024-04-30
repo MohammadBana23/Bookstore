@@ -28,7 +28,7 @@ class UserAdmin(BaseUserAdmin):
         ("Authentication", {"fields": ("email", "phone", "username", "password" , "birthdate")}),
         (
             "Permissions",
-            {"fields": ("is_superuser", "is_staff", "is_active", "is_verified")},
+            {"fields": ("is_superuser", "is_staff", "is_active", "is_verified", "is_special")},
         ),
     )
     add_fieldsets = (

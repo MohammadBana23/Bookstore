@@ -8,6 +8,7 @@ from rest_framework import status
 from ..models import Book, BuyBook
 from bookstore.api.tools import CustomException
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -64,6 +65,17 @@ class BookReturnAPIView(generics.GenericAPIView):
 
         return Response({"message": "Book returned successfully."}, status=status.HTTP_200_OK)
     
-class BookListGenericAPIView(generics.ListAPIView):
-    serializer_class = BookListSerializer
+class BookListGenericAPIView(generics.GenericAPIView):
     queryset = Book.objects.all()
+    serializer_class = BookListSerializer
+    permission_classes = [IsAuthenticated]
+        
+    def get(self, request):
+        if request.user.is_special:
+            print("##########33")
+            self.queryset = Book.objects.all()
+        else:
+            print("@@@@@@@@@")
+            self.queryset = Book.objects.filter(is_special=False)
+        serializers = self.serializer_class(self.queryset, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
