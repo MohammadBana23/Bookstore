@@ -1,8 +1,9 @@
 
 from rest_framework.response import Response
-from rest_framework.generics import GenericAPIView, RetrieveAPIView
+from rest_framework import generics
 from rest_framework.mixins import RetrieveModelMixin
-from bookstore.serializers import BuyBookSerializer, BookDownloadSerializer, BookReturnSerializer
+from bookstore.serializers import (BuyBookSerializer, BookDownloadSerializer, 
+                                    BookListSerializer,BookReturnSerializer)
 from rest_framework import status
 from ..models import Book, BuyBook
 from bookstore.api.tools import CustomException
@@ -10,7 +11,7 @@ from rest_framework import serializers
 
 
 
-class BuyBookCreateGenericAPIView(GenericAPIView):
+class BuyBookCreateGenericAPIView(generics.GenericAPIView):
     serializer_class = BuyBookSerializer
 
     def post(self, request, *args, **kwargs):
@@ -19,7 +20,7 @@ class BuyBookCreateGenericAPIView(GenericAPIView):
         data = {"download link":serializer.save()}
         return Response(data, status=status.HTTP_201_CREATED)
     
-class BookDownloadAPIView(RetrieveAPIView):
+class BookDownloadAPIView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookDownloadSerializer
 
@@ -41,7 +42,7 @@ class BookDownloadAPIView(RetrieveAPIView):
             )
         return book
     
-class BookReturnAPIView(GenericAPIView):
+class BookReturnAPIView(generics.GenericAPIView):
     serializer_class = BookReturnSerializer
 
     def post(self, request, *args, **kwargs):
@@ -62,3 +63,7 @@ class BookReturnAPIView(GenericAPIView):
         BuyBook.objects.filter(user=user, book_id=book_id).delete()
 
         return Response({"message": "Book returned successfully."}, status=status.HTTP_200_OK)
+    
+class BookListGenericAPIView(generics.ListAPIView):
+    serializer_class = BookListSerializer
+    queryset = Book.objects.all()
