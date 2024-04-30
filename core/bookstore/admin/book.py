@@ -1,5 +1,5 @@
 from django.contrib import admin
-from bookstore.models import Book
+from bookstore.models import Book, Category
 
 
 class BookAdmin(admin.ModelAdmin):
@@ -23,4 +23,13 @@ class BookAdmin(admin.ModelAdmin):
     search_fields = ("name", "cost", "language")
     ordering = ("created_at", "updated_at", "id")
     
+class CategoryAdmin(admin.ModelAdmin):
+    model = Category
+    list_display = (
+        "id",
+        "name",
+    )
+    search_fields = ("name",)
+    
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Book, BookAdmin)
