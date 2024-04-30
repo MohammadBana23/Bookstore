@@ -1,7 +1,7 @@
 from django.urls import path
 from bookstore.views import (
     SignUpView, LoginView, RequestTokenView, ChargeAccountView,
-    BuyBookCreateGenericAPIView, BookDownloadAPIView
+    BuyBookCreateGenericAPIView, BookDownloadAPIView, BookReturnAPIView
 )
 
 urlpatterns = [
@@ -9,6 +9,7 @@ urlpatterns = [
     path('login/' , LoginView.as_view(), name='login'),
     path("request/token/", RequestTokenView.as_view(), name='request-token'),
     path("charge-account/", ChargeAccountView.as_view(), name='charge-account'),
-    path("buy-book/", BuyBookCreateGenericAPIView.as_view(), name='buy-book'),
-    path("book/<int:pk>/download/", BookDownloadAPIView.as_view(), name='book-retrieve'),
+    path("book/buy/", BuyBookCreateGenericAPIView.as_view(), name='book-buy'),
+    path("book/<int:pk>/download/", BookDownloadAPIView.as_view(), name='book-download'),
+    path("book/<int:pk>/return/", BookReturnAPIView.as_view(), name='book-return'),
 ]

@@ -9,9 +9,9 @@ class BuyBookAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+    readonly_fields = ("created_at", "updated_at", "expired_at")
     search_fields = ("user", "book")
     ordering = ("created_at", "updated_at", "id")
     
-
 
 admin.site.register(BuyBook, BuyBookAdmin)
