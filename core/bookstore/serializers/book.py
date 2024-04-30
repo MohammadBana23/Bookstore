@@ -87,7 +87,8 @@ class BookListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'name', 'author', 'get_categories', 'cost', 'pages_num', 'year']
-
+        
+        
 # def get_object_data():
 #     client = Minio("bookstoreminio.darkube.app",
 #         access_key="a4l0tgkwhZbC3M6r1LJkbrDHc9PQQiy9",
