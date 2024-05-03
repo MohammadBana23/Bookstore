@@ -13,7 +13,7 @@ class RequestEmailTokenSerializer(serializers.Serializer):
             email = self.request.user.email
             token_object = VerificationToken.generate(receiver=email)
             sender = Email()
-            sender.send_token_by_template(email, token_object.html, token_object.message)
+            sender.send_token_by_template.delay(email, token_object.html, token_object.message)
             return "Token Sent"
         else:
             # Handle unauthenticated user case

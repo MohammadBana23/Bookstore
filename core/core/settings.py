@@ -185,7 +185,6 @@ MINIO_SECRETKEY = os.getenv("MINIO_SECRETKEY")
 
 
 # simple jwt settings
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
@@ -193,3 +192,6 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
 }
+
+# celery configuration
+CELERY_BROKER_URL = "redis://redis:6379/1"

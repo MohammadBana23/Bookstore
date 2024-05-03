@@ -1,11 +1,13 @@
 from django.core.mail import send_mail
-from . import CustomException
 from rest_framework import status
+from celery import shared_task
+from . import CustomException
 
 
 class Email:
 
     @staticmethod
+    @shared_task
     def send_token_by_template(
         receiver,
         template,
