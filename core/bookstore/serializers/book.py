@@ -2,9 +2,9 @@ from rest_framework import serializers
 from bookstore.models import Book, BuyBook
 from rest_framework import status
 from bookstore.api.tools import CustomException
-from minio import Minio
-from io import BytesIO
-from django.http import FileResponse
+# from minio import Minio
+# from io import BytesIO
+# from django.http import FileResponse
 
 
 class BuyBookSerializer(serializers.Serializer):

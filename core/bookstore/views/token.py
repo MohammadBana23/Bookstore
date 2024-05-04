@@ -6,6 +6,8 @@ from rest_framework import serializers
 
 
 class RequestTokenView(APIView):
+    
+    # post method for generate a token that the user can charge account
     def post(self, request, *args, **kwargs):
         serializer = RequestEmailTokenSerializer(data=request.data, request=request)
         try:
