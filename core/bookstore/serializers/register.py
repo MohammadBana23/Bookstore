@@ -19,7 +19,7 @@ class SignupSerializer(serializers.ModelSerializer):
         # check if password2 is the same as password
         if attrs["password2"] != attrs["password"]:
             raise CustomException(
-                "رمزعبور ها یکسان نیستند!",
+                "passwords aren't the same",
                 "error",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
@@ -29,7 +29,7 @@ class SignupSerializer(serializers.ModelSerializer):
             validate_password(attrs["password"])
         except:
             raise CustomException(
-                "رمزعبور وارد شده صحیح نمیباشد.",
+                "password is not valid!",
                 "error",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
@@ -43,14 +43,14 @@ class SignupSerializer(serializers.ModelSerializer):
             q = User.objects.filter(email=attrs["email"])
             if q.exists():
                 raise CustomException(
-                    "کاربری با این ایمیل وجود دارد.",
+                    "there is no user with this email.",
                     "error",
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
         elif result == "Error":
             """not email is detected"""
             raise CustomException(
-                "ایمیل وارد شده صحیح نمیباشد.",
+                "your email is not valid!",
                 "error",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
@@ -76,13 +76,12 @@ class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         # username can be phone or email
         # check is the phone_or_email is valid
-        print("$$$$$$$$$$$$$$$$$$$$", attrs)
         email = attrs["email"]
         result = validate_email(email)
 
         if result == "Error":
             raise CustomException(
-                "ایمیل وارد شده صحیح نمیباشد.",
+                "your email in not valid!",
                 "error",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
@@ -91,13 +90,13 @@ class LoginSerializer(TokenObtainPairSerializer):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise CustomException(
-                "کاربری با این اطلاعات وجود ندارد.",
+                "there is no user with this information.",
                 "error",
                 status_code=status.HTTP_404_NOT_FOUND,
             )
         except:
             raise CustomException(
-                "مشکلی در احراز هویت کاربر بوجود آمده است.",
+                "there is a problem with user authentication",
                 "error",
                 status_code=status.HTTP_404_NOT_FOUND,
             )
@@ -112,7 +111,7 @@ class LoginSerializer(TokenObtainPairSerializer):
             refresh = self.get_token(user)
         except:
             raise CustomException(
-                "رمزعبور به درستی وارد نشده است.",
+                "the password is not correct",
                 "error",
                 status_code=status.HTTP_403_FORBIDDEN,
             )

@@ -1,7 +1,6 @@
 
 from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework.mixins import RetrieveModelMixin
 from bookstore.serializers import (BuyBookSerializer, BookDownloadSerializer, 
                                     BookListSerializer,BookReturnSerializer)
 from rest_framework import status
@@ -14,7 +13,8 @@ from rest_framework.permissions import IsAuthenticated
 
 class BuyBookCreateGenericAPIView(generics.GenericAPIView):
     serializer_class = BuyBookSerializer
-
+    
+    # POST method to create a BuyBook record
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, request=request)
         serializer.is_valid(raise_exception=True)  # Ensure serializer is valid
@@ -24,17 +24,19 @@ class BuyBookCreateGenericAPIView(generics.GenericAPIView):
 class BookDownloadAPIView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookDownloadSerializer
-
+    
+    # Retrieve a specific book for download
     def get_object(self):
         book = super().get_object()
         user = self.request.user
         
+        # Check if the user is authenticated
         if not self.request.user.is_authenticated:
             raise serializers.ValidationError("Please authenticate first.")
 
         # Check if the user has purchased the book
         try:
-            buy_book = BuyBook.objects.get(user=user, book=book)
+            BuyBook.objects.get(user=user, book=book)
         except BuyBook.DoesNotExist:
             raise CustomException(
                 "You have not purchased this book.",
@@ -46,6 +48,7 @@ class BookDownloadAPIView(generics.RetrieveAPIView):
 class BookReturnAPIView(generics.GenericAPIView):
     serializer_class = BookReturnSerializer
 
+    # POST method to return a book that current user bought it
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request, 'book_id': self.kwargs['pk']})
         serializer.is_valid(raise_exception=True)
@@ -70,12 +73,11 @@ class BookListGenericAPIView(generics.GenericAPIView):
     serializer_class = BookListSerializer
     permission_classes = [IsAuthenticated]
         
+    # GET method to list books based on user permissions
     def get(self, request):
         if request.user.is_special:
-            print("##########33")
             self.queryset = Book.objects.all()
         else:
-            print("@@@@@@@@@")
             self.queryset = Book.objects.filter(is_special=False)
         serializers = self.serializer_class(self.queryset, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
