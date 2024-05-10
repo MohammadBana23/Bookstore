@@ -12,6 +12,7 @@ class BookAdmin(admin.ModelAdmin):
         "get_categories",
         "cost",
         "link_download",
+        "book_file",
         "language",
         "year",
         "pages_num",
