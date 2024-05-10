@@ -12,8 +12,9 @@ class Book(models.Model):
     publisher = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category)
-    picture = models.ImageField(null=True, blank=True)
-    link_download = models.CharField(max_length=1023)
+    picture = models.ImageField(upload_to="book-images/", null=True, blank=True)
+    book_file = models.FileField(upload_to="books/", null=True, blank=True)
+    link_download = models.CharField(max_length=1023, null=True, blank=True)
     cost = models.IntegerField(default=0)
     language = models.CharField(max_length=255, choices=LANGUAGE_CHOICES, default="ENGLISH")
     year = models.IntegerField(null=True, blank=True)
@@ -23,7 +24,7 @@ class Book(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def get_categories(self):
-        return "\n".join([c.categories for c in self.categories.all()])
+        return "\n".join([c.name for c in self.categories.all()])
     
     def __str__(self):
         return self.name

@@ -86,7 +86,7 @@ class BookListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Book
-        fields = ['id', 'name', 'author', 'get_categories', 'cost', 'pages_num', 'year']
+        fields = ['id', 'name', 'author', 'book_file', 'get_categories', 'cost', 'pages_num', 'year']
         
         
 # def get_object_data():
