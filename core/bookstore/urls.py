@@ -4,7 +4,7 @@ from bookstore.views import (
     BuyBookCreateGenericAPIView, BookDownloadAPIView, BookReturnAPIView,
     BookListGenericAPIView
 )
-
+app_name = 'api-v1'
 urlpatterns = [
     
     # registration url pattern

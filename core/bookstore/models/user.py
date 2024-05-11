@@ -16,7 +16,7 @@ class UserManager(BaseUserManager):
     """
 
     def create_user(
-        self, email, phone, password, username=None, **extra_fields
+        self, email, password, phone=None, username=None, **extra_fields
     ):
         """
         Create and save a user with the given email and password.
@@ -56,7 +56,7 @@ class UserManager(BaseUserManager):
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-    def create_superuser(self, email, phone, password, **extra_fields):
+    def create_superuser(self, email, password, **extra_fields):
         """
         Create and save a SuperUser with the given email and password.
         """
@@ -64,17 +64,18 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
         extra_fields.setdefault("is_verified", True)
+        extra_fields.setdefault("is_special", True)
         
         if extra_fields.get("is_staff") is not True:
             raise ValueError()
         if extra_fields.get("is_superuser") is not True:
             raise ValueError()
-        return self.create_user(email, phone, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, null=True, blank=True)
-    email = models.EmailField(unique=True, null=True, blank=True)
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
     birthdate = models.DateField(null=True, blank=True)
     cash = models.IntegerField(default=0)
@@ -88,7 +89,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["phone"]
 
     objects = UserManager()
 
