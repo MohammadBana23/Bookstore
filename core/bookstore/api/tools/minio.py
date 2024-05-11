@@ -6,11 +6,11 @@ class MinIO:
         self.access_key = access_key
         self.secret_key = secret_key
         self.endpoint = endpoint
-        self.client = Minio(endpoint=endpoint,
-                            access_key=access_key,
+        self.client = Minio(endpoint=endpoint, 
+                            access_key=access_key, 
                             secret_key=secret_key)
         
-    def upload_file(self, source_file, bucket_name):
+    def upload_file(self, source_file, bucket_name, destination_file):
         found = self.client.bucket_exists(bucket_name)
         if not found:
             self.client.make_bucket(bucket_name)
@@ -18,7 +18,6 @@ class MinIO:
         else:
             print("Bucket", bucket_name, "already exists")
             
-        destination_file = "test.pdf"
         # Upload the file, renaming it in the process
         self.client.fput_object(
             bucket_name, destination_file, source_file,
