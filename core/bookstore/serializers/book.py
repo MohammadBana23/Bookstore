@@ -76,7 +76,7 @@ class BookReturnSerializer(serializers.Serializer):
         user = self.context['request'].user
         book_id = self.context['book_id']
         if not BuyBook.objects.filter(user=user, book_id=book_id).exists():
-            raise serializers.ValidationError("User has not bought this book.")
+            raise serializers.ValidationError("You have not purchased this book.")
         
         return attrs
     
@@ -84,6 +84,6 @@ class BookListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Book
-        fields = ['id', 'name', 'author', 'book_file', 'get_categories', 'cost', 'pages_num', 'year']
+        fields = ['id', 'name', 'author', 'link_download_10pages', 'get_categories', 'cost', 'pages_num', 'year']
         
         

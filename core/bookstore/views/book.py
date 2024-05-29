@@ -48,8 +48,8 @@ class BookDownloadAPIView(generics.RetrieveAPIView):
 class BookReturnAPIView(generics.GenericAPIView):
     serializer_class = BookReturnSerializer
 
-    # POST method to return a book that current user bought it
-    def post(self, request, *args, **kwargs):
+    # GET method to return a book that current user bought it
+    def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request, 'book_id': self.kwargs['pk']})
         serializer.is_valid(raise_exception=True)
 

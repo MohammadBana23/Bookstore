@@ -1,2 +1,2 @@
 Dear {{receiver}} :
-This verification code is used for register.you are now registring in this website:{{token}}
+This verification code is used for charge account.you are now charge your account in this website:{{token}}
