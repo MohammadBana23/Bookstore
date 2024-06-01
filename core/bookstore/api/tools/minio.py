@@ -10,20 +10,20 @@ class MinIO:
                             access_key=access_key, 
                             secret_key=secret_key)
         
-    def upload_file(self, source_file, bucket_name, destination_file):
+    def upload_file(self, bucket_name, destination_file, data, file_size):
         found = self.client.bucket_exists(bucket_name)
         if not found:
             self.client.make_bucket(bucket_name)
             print("Created bucket", bucket_name)
         else:
             print("Bucket", bucket_name, "already exists")
-            
+        
         # Upload the file, renaming it in the process
-        self.client.fput_object(
-            bucket_name, destination_file, source_file,
+        self.client.put_object(
+            bucket_name, destination_file, data, file_size
         )
         print(
-            source_file, "successfully uploaded as object",
+            "successfully uploaded as object",
             destination_file, "to bucket", bucket_name,
         )    
         

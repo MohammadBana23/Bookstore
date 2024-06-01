@@ -1,19 +1,18 @@
-import os
+import io
 from pypdf import PdfReader, PdfWriter
-from django.conf import settings
 
-def save_ten_pages_pdf(pdf_path):
-    input_pdf = PdfReader(pdf_path)
-
+def save_ten_pages_pdf(data_bytes, data_name):
+    input_pdf = PdfReader(io.BytesIO(data_bytes))
     output_pdf = PdfWriter()
+    
     for page_num in range(min(10, len(input_pdf.pages))):
         output_pdf.add_page(input_pdf.pages[page_num])
-        
-    pdf_file_path = pdf_path.split("/")[-1]
-    output_file_path = os.path.join(settings.MEDIA_ROOT, 'book_10pages', f'{pdf_file_path.split(".")[0]}-10pages.pdf')
-    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-
-    with open(output_file_path, 'wb') as output_file:
-        output_pdf.write(output_file)
-
-    return output_file_path
+    
+    output_pdf_bytes = io.BytesIO()
+    output_pdf.write(output_pdf_bytes)
+    output_pdf_bytes.seek(0)  # Reset the stream position to the beginning
+    
+    data_name = data_name.replace(".", "-10pages.")
+    output_pdf_size = len(output_pdf_bytes.getvalue())  # Get the correct size
+    
+    return output_pdf_bytes, data_name, output_pdf_size

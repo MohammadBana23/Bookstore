@@ -1,10 +1,8 @@
 from django.contrib import admin
 from bookstore.models import Book, Category
-from minio import Minio
 from bookstore.api.tools import MinIO, save_ten_pages_pdf
 from django.conf import settings
-import os
-
+import io
 
 class BookAdmin(admin.ModelAdmin):
     model = Book
@@ -29,45 +27,48 @@ class BookAdmin(admin.ModelAdmin):
     
     def save_model(self, request, obj, form, change):
         
-        # Save the Book object
-        super().save_model(request, obj, form, change)
-        obj_file_path = obj.book_file.path
-        obj_file_name = (obj_file_path.split("/")[-1]).split(".")[0]
+        book_file = form.cleaned_data.get('book_file')
+        file_name = book_file.name
+        file_data = book_file.read()
+        file_size = book_file.size
         
+        # Convert file_data to a BytesIO object
+        file_data_io = io.BytesIO(file_data)
+        
+        # Initialize MinIO client
+        minio = MinIO(settings.MINIO_ACCESSKEY, settings.MINIO_SECRETKEY, settings.MINIO_ENDPOINT)
         
         # Upload full PDF to MinIO
-        minio = MinIO(settings.MINIO_ACCESSKEY, settings.MINIO_SECRETKEY, settings.MINIO_ENDPOINT)
-        minio.upload_file(obj_file_path, "bookstore", obj_file_path.split("/")[-1])
+        minio.upload_file("bookstore", file_name, file_data_io, file_size)
         
         # Get download link for full PDF
-        download_link = minio.get_download_link("bookstore", obj_file_path.split("/")[-1])
+        download_link = minio.get_download_link("bookstore", file_name)
         if download_link:
             obj.link_download = download_link
-            obj.save()
         else:
             print("Failed to generate download link for full PDF.")
-
+        
+        # Generate 10 pages PDF and convert it to bytes
+        ten_pages_pdf_bytes, ten_pages_pdf_name , ten_pages_pdf_size= save_ten_pages_pdf(file_data, file_name)
+        
+        
         # Upload 10 pages PDF to MinIO
-        url_path = save_ten_pages_pdf(obj.book_file.path)
-        minio.upload_file(url_path, "bookstore-10pages", f'{obj_file_name}-10pages.pdf')
+        minio.upload_file("bookstore-10pages", ten_pages_pdf_name, ten_pages_pdf_bytes, ten_pages_pdf_size)
         
         # Get download link for 10 pages PDF
-        download_link_10pages = minio.get_download_link("bookstore-10pages", f'{obj_file_name}-10pages.pdf')
+        download_link_10pages = minio.get_download_link("bookstore-10pages", ten_pages_pdf_name)
         if download_link_10pages:
             obj.link_download_10pages = download_link_10pages
-            obj.save()
         else:
             print("Failed to generate download link for 10 pages PDF.")
-
-        # Remove the PDF file from the media directory
-        try:
-            os.remove(obj.book_file.path)
-            os.remove(url_path)
-            obj.book_file = None
-            obj.save()
-        except OSError:
-            pass  # File doesn't exist or couldn't be deleted, ignore
+        
+        # Save the Book object
+        super().save_model(request, obj, form, change)
+        # Save the Book object with the updated download links
+        obj.save()
     
+admin.site.register(Book, BookAdmin)
+
 class CategoryAdmin(admin.ModelAdmin):
     model = Category
     list_display = (
@@ -77,4 +78,3 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(Book, BookAdmin)
