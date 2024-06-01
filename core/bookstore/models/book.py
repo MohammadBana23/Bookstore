@@ -13,7 +13,6 @@ class Book(models.Model):
     description = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category)
     picture = models.ImageField(upload_to="book-images/", null=True, blank=True)
-    book_file = models.FileField(upload_to="books/", null=True, blank=True)
     link_download = models.CharField(max_length=1023, null=True, blank=True)
     link_download_10pages = models.CharField(max_length=1023, null=True, blank=True)
     cost = models.IntegerField(default=0)

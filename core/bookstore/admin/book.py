@@ -1,10 +1,11 @@
 from django.contrib import admin
 from bookstore.models import Book, Category
-from bookstore.api.tools import MinIO, save_ten_pages_pdf
+from bookstore.api.tools import MinIO, save_ten_pages_pdf, BookAdminForm
 from django.conf import settings
 import io
 
 class BookAdmin(admin.ModelAdmin):
+    form = BookAdminForm
     model = Book
     list_display = (
         "id",
@@ -13,7 +14,6 @@ class BookAdmin(admin.ModelAdmin):
         "publisher",
         "get_categories",
         "cost",
-        "book_file",
         "language",
         "year",
         "pages_num",
@@ -66,6 +66,14 @@ class BookAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         # Save the Book object with the updated download links
         obj.save()
+        
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if obj and obj.link_download:
+            form.base_fields['book_file'].help_text = f'<strong>Book download link : </strong> <a href="{obj.link_download}" target="_blank">Download Full PDF</a> </br>'
+        if obj and obj.link_download_10pages:
+            form.base_fields['book_file'].help_text += f'<strong>10 pages of book download link : </strong> <a href="{obj.link_download_10pages}" target="_blank">Download 10 Pages PDF</a>'
+        return form
     
 admin.site.register(Book, BookAdmin)
 
