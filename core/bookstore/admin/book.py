@@ -36,7 +36,7 @@ class BookAdmin(admin.ModelAdmin):
         file_data_io = io.BytesIO(file_data)
         
         # Initialize MinIO client
-        minio = MinIO(settings.MINIO_ACCESSKEY, settings.MINIO_SECRETKEY, settings.MINIO_ENDPOINT)
+        minio = MinIO()
         
         # Upload full PDF to MinIO
         minio.upload_file("bookstore", file_name, file_data_io, file_size)

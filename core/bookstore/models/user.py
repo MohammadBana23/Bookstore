@@ -8,6 +8,7 @@ from rest_framework import status
 from django.utils.translation import gettext_lazy as _
 from datetime import date
 from .book import Book
+from celery import shared_task
 
 class UserManager(BaseUserManager):
     """

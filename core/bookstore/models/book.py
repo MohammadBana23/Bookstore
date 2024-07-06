@@ -15,7 +15,7 @@ class Book(models.Model):
     picture = models.ImageField(upload_to="book-images/", null=True, blank=True)
     link_download = models.CharField(max_length=1023, null=True, blank=True)
     link_download_10pages = models.CharField(max_length=1023, null=True, blank=True)
-    cost = models.IntegerField(default=0)
+    cost = models.CharField(max_length=1023,default=0)
     language = models.CharField(max_length=255, choices=LANGUAGE_CHOICES, default="ENGLISH")
     year = models.IntegerField(null=True, blank=True)
     pages_num = models.IntegerField(null=True, blank=True, default=0)
