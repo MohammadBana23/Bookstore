@@ -3,9 +3,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from ..serializers import RequestEmailTokenSerializer
 from rest_framework import serializers
+from rest_framework.permissions import IsAuthenticated
 
 
 class RequestTokenView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     
     # post method for generate a token that the user can charge account
     def post(self, request, *args, **kwargs):

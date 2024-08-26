@@ -8,8 +8,8 @@ app_name = 'api-v1'
 urlpatterns = [
     
     # registration url pattern
-    path('signup/' , SignUpView.as_view(), name='signup'),
-    path('login/' , LoginView.as_view(), name='login'),
+    path('auth/signup/' , SignUpView.as_view(), name='signup'),
+    path('auth/login/' , LoginView.as_view(), name='login'),
     
     #generate token url pattern
     path("request/token/", RequestTokenView.as_view(), name='request-token'),

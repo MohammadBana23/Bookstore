@@ -123,7 +123,7 @@ def generate_username(value):
         x = uuid_tmp.split("-")
         id = random.choice(x)
 
-        username = "goodoperuser-" + id
+        username = "bookstoreperuser-" + id
         return username
 
     else:
