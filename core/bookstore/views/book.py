@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 
 class BuyBookCreateGenericAPIView(generics.GenericAPIView):
     serializer_class = BuyBookSerializer
+    permission_classes = [IsAuthenticated]
     
     # POST method to create a BuyBook record
     def post(self, request, *args, **kwargs):
@@ -24,6 +25,7 @@ class BuyBookCreateGenericAPIView(generics.GenericAPIView):
 class BookDownloadAPIView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookDownloadSerializer
+    permission_classes = [IsAuthenticated]
     
     # Retrieve a specific book for download
     def get_object(self):
@@ -47,7 +49,8 @@ class BookDownloadAPIView(generics.RetrieveAPIView):
     
 class BookReturnAPIView(generics.GenericAPIView):
     serializer_class = BookReturnSerializer
-
+    permission_classes = [IsAuthenticated]
+    
     # POST method to return a book that current user bought it
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request, 'book_id': self.kwargs['pk']})

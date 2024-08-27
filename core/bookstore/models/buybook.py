@@ -8,8 +8,8 @@ def calculate_expiration_datetime():
     return timezone.now() + timedelta(minutes=60)
 
 class BuyBook(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    book = models.ForeignKey(Book, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
     expired_at = models.DateTimeField(default=calculate_expiration_datetime)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
