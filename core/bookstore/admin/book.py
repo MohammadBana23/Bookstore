@@ -34,9 +34,7 @@ class BookAdmin(admin.ModelAdmin):
         
         # Convert file_data to a BytesIO object
         file_data_io = io.BytesIO(file_data)
-        print("@@@@@@", type(file_data_io))
-        print("@@@@@@", file_name)
-        print("@@@@@@", file_size)
+ 
         # Initialize MinIO client
         minio = MinIO()
         
@@ -52,9 +50,7 @@ class BookAdmin(admin.ModelAdmin):
         
         # Generate 10 pages PDF and convert it to bytes
         ten_pages_pdf_bytes, ten_pages_pdf_name , ten_pages_pdf_size = save_ten_pages_pdf(file_data, file_name)
-        print("######", type(ten_pages_pdf_bytes))
-        print("######", ten_pages_pdf_name)
-        print("######", ten_pages_pdf_size)
+
         # Upload 10 pages PDF to MinIO
         minio.upload_file("bookstore-10pages", ten_pages_pdf_name, ten_pages_pdf_bytes, ten_pages_pdf_size)
         
